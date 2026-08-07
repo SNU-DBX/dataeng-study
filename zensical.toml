@@ -1,21 +1,54 @@
 [project]
-site_url = "https://www.example.com/"
-site_name = "Documentation"
-# site_description = "Your project description"
+site_url = "https://snu-dbx.github.io/dataeng-study/"
+site_name = "Data Engineering — Study Guides"
+site_description = "Source-code study guides for a project-based database systems course"
 # site_author = "Your name"
 
 # copyright = "Copyright &copy; 2026 Your name"
 
-# repo_url = "https://github.com/SNU-DBX/dataeng-study"
-# repo_name = "SNU-DBX/dataeng-study"
+repo_url = "https://github.com/SNU-DBX/dataeng-study"
+repo_name = "SNU-DBX/dataeng-study"
 # edit_uri = "edit/main/docs/"
 
 nav = [
-  { "Get started" = "index.md" },
+  { "Home" = "index.md" },
+  { "PA2a · Buffer Manager" = [
+    "pa2a/index.md",
+    { "Ground" = [
+      "pa2a/01-why-a-buffer-pool.md",
+    ] },
+    { "I · Where the pool comes from" = [
+      "pa2a/02-shared-memory.md",
+      "pa2a/03-buffermanagershmeminit.md",
+      "pa2a/04-buf-id-buffer-block.md",
+      "pa2a/05-state-word.md",
+    ] },
+    { "II · The read path" = [
+      "pa2a/06-read-path.md",
+      "pa2a/07-bufferalloc.md",
+      "pa2a/08-tag-table-lock.md",
+      "pa2a/09-clock-sweep.md",
+      "pa2a/10-pin-lock-spinlock.md",
+    ] },
+    { "III · Back to disk" = [
+      "pa2a/11-wal-rule.md",
+      "pa2a/12-gather-sort-flush.md",
+      "pa2a/13-written-vs-durable.md",
+    ] },
+    { "IV · Edges" = [
+      "pa2a/14-relation-extension.md",
+      "pa2a/15-lwlocks.md",
+      "pa2a/16-guc.md",
+    ] },
+    { "V · The assignment" = [
+      "pa2a/17-delta.md",
+      "pa2a/18-drills.md",
+    ] },
+  ] },
   { "Markdown in 5min" = "markdown.md" },
 ]
 
-# extra_css = ["stylesheets/extra.css"]
+extra_css = ["stylesheets/extra.css"]
 # extra_javascript = ["javascripts/extra.js"]
 
 [project.theme]
