@@ -85,6 +85,12 @@ features = [
   # "toc.integrate",
 ]
 
+[project.extra]
+alternate = [
+  { name = "Korean", link = "/dataeng-study/kr/", lang = "kr" },
+  { name = "English", link = "/dataeng-study/", lang = "en" }
+]
+
 # logo = "assets/logo.png"
 
 # [project.theme.icon]
