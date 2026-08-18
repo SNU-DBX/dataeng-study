@@ -1,5 +1,8 @@
 # 02 · 공유 메모리
 
+!!! abstract 목표
+    공유 메모리 일반과 PostgreSQL의 공유 메모리를 이해한다. 버퍼 풀의 초기화를 이해하기 위해 알아야 하는 내용이다.
+
 ## 공유 메모리(Shared Memory)란
 
 ### 공유 메모리가 필요한 이유
@@ -74,6 +77,10 @@ ptr = mmap(NULL, size, PROT_READ | PROT_WRITE,
 
 ## PostgreSQL의 공유 메모리 관리
 
+
+!!! warning "PostgreSQL 19 버전"
+    2026.8월 현재 베타 중인 PostgreSQL 19에서는 새로운 형태의 공유 메모리 할당 방식이 도입되었다([관련 커밋](https://github.com/postgres/postgres/commit/a4b6139dcceb47986577aef36e73f15187ceb727) 참고). 현재 수업 자료는 18.4 버전에 기초하고 있어서 이 변화의 영향을 받지 않는다. 
+
 이제 PostgreSQL이 공유 메모리를 어떻게 초기화하고 사용하는지 알아보자. 이는 `src/backend/storage/ipc/ipci.c` 파일의 `CreateSharedMemoryAndSemaphores()` 함수에서 이루어진다. PostgreSQL은 익명 `mmap()`으로 충분한 크기의 공유 메모리를 **한 번에** 확보해 둔 뒤, 공유 메모리가 필요한 서브시스템들이 그 안에서 자기 몫을 떼어 가게 한다. 이렇게 하는 이유는 공유 메모리 세그먼트를 나중에 키울 수 없기 때문이다.
 
 **첫번째 단계: 크기 측정 및 세그먼트 생성**
@@ -115,3 +122,7 @@ ptr = mmap(NULL, size, PROT_READ | PROT_WRITE,
                       LockManagerShmemInit()
                       ...
 ```
+
+!!! question "생각해 볼 거리"
+    * MySQL은 스레드 기반 DBMS다. MySQL의 버퍼 풀을 위해 공유 메모리가 필요할까?
+    * 각 서브시스템에 필요한 공유 메모리의 크기를 알고 있다면, 왜 각각 공유 메모리를 OS 커널로부터 할당받지 않고 하나의 거대한 세그먼트를 받은 뒤 각각 서브시스템에 할당해 줄까? 

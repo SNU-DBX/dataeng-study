@@ -53,6 +53,11 @@ You will see `GetBufferDescriptor(buffer - 1)` scattered through `bufmgr.c`; tha
 conversion. And `PrivateRefCount` — per-backend, non-shared bookkeeping we meet in
 [§10](10-pin-lock-spinlock.md) — is keyed by `Buffer`, not `buf_id`.
 
+
+??? warning "`buf_id`와 `Buffer`는 1만큼 다르다"
+    버퍼 매니저 **바깥**에서 쓰는 `Buffer` 타입은 0-based가 아니다. `0`은 `InvalidBuffer`로 예약되어 있고, 공유 버퍼는 `1`부터, 음수는 로컬 버퍼(임시 테이블용)를 뜻한다. 그래서 둘 사이 변환에 `#define BufferDescriptorGetBuffer(bdesc) ((bdesc)->buf_id + 1)`처럼 `+1`이 붙는다. 이 문서에서 다루는 `buf_id`는 어디까지나 내부용 0-based 인덱스다. 지금 당장은 이해하기 어렵겠지만, 이후에 `Buffer`라는 자료형을 보게 되면 이해할 것이다.
+
+
 !!! lens "PA2a lens · why one contiguous array matters"
 
     The VISTA research prototype this assignment distills keeps a separate base pointer per pool,
