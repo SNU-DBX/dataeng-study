@@ -13,6 +13,7 @@ repo_name = "SNU-DBX/dataeng-study"
 nav = [
   { "Home" = "index.md" },
   { "PA0 · Bootcamp" = [
+    "pa0/index.md",
     { "I · C Basics" = [
       "pa0/00-development-environment-and-tools.md",
       "pa0/01-c-program-structure-and-compilation.md",
@@ -24,6 +25,10 @@ nav = [
       "pa0/07-build-and-debugging.md",
     ] },
     { "II · C++ Basics" = [
+      "pa0/08-cpp-basic-syntax-and-type-system.md",
+      "pa0/09-classes-inheritance-and-polymorphism.md",
+      "pa0/10-stl.md",
+      "pa0/11-resource-management-and-concurrency.md",
     ] },
     { "III · System Programming" = [
     ] },
