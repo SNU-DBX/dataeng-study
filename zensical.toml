@@ -31,6 +31,13 @@ nav = [
       "pa0/11-resource-management-and-concurrency.md",
     ] },
     { "III · System Programming" = [
+      "pa0/12-data-representation.md",
+      "pa0/13-memory.md",
+      "pa0/14-cache.md",
+      "pa0/15-process-thread.md",
+      "pa0/16-address-space.md", 
+      "pa0/17-dynamic-alloc.md",
+      "pa0/18-concurrency.md" 
     ] },
   ] },
   { "PA2a · Buffer Manager" = [
