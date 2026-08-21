@@ -1,6 +1,6 @@
-# 9 · 클래스(Class), 상속과 다형성 (Polymorphism)
+# 9 · 클래스, 상속과 다형성
 
-## 클래스 (Class) 와 구조체 (Struct)
+## 클래스와 구조체
 
 앞서 [[1. C++ 기본 문법과 타입 시스템]]에서 객체지향 프로그래밍의 **클래스(Class)** 를 간단하게 언급했습니다.
 C++ 에서 데이터뿐 아니라 데이터를 다루는 함수도 함께 포함할 수 있는 사용자 정의 형식에는 2가지가 존재합니다.
@@ -8,14 +8,14 @@ C++ 에서 데이터뿐 아니라 데이터를 다루는 함수도 함께 포함
 2. **구조체 (`struct`)**
 
 클래스와 구조체 모두 멤버별로 접근 범위를 `public`, `protected`, `private`로 구분해서 사용할 수 있습니다.
-클래스의 접근 수준은 `private`이고 구조체의 접근 수준은 `public`이라는 차이점을 제외하면, 모두 데이터와 멤버 함수를 가질 수 있다는 점에서 두 문법은 기본적으로 동일합니다. 
+클래스의 접근 수준은 `private`이고 구조체의 접근 수준은 `public`이라는 차이점을 제외하면, 모두 데이터와 멤버 함수를 가질 수 있다는 점에서 두 문법은 기본적으로 동일합니다.
 
 ```cpp
 // struct members are public by default.
 struct Point {
 	int x = 0;
 	int y = 0;
-	
+
 	void Print() const {
 		std::cout << "Point(" << x << ", " << y << ")" << std::endl;
 	}
@@ -23,7 +23,7 @@ struct Point {
 
 // class members are private by default, so public methods are used for access.
 
-class Number {	
+class Number {
 public:
 	Number() : value_(0) { }
 	~Number() { }
@@ -40,7 +40,7 @@ private:
 
 이후 내용에서는 내부 상태와 동작을 함께 관리하는 객체를 중심으로 설명하기 위해 클래스를 주로 다루겠습니다.
 
-- 멤버 함수는 클래스가 제공하는 기능을 표현합니다. 
+- 멤버 함수는 클래스가 제공하는 기능을 표현합니다.
 - 멤버 함수 안의 `this` 포인터는 현재 호출 대상 객체를 가리킵니다.
 ```cpp
 class Number {
@@ -106,25 +106,25 @@ private:
 int main() {
   int number = 10;
   Wrapper wrapper(number);
-  
+
   return 0;
 }
 ```
 
-## 생성자 (Constructor)와 소멸자 (Destructor)
+## 생성자와 소멸자
 
 사용자는 클래스에 생성자와 소멸자를 직접 선언할 수 있습니다.
 직접 선언하지 않은 경우에는 컴파일러가 기본 생성자와 소멸자를 를 조건에 따라 자동으로 생성합니다.
 
 - **생성자 (Constructor)** 는 객체가 생성될 때 클래스의 멤버를 초기화하기 위해 자동으로 호출되는 멤버 함수입니다.
-	- 별도의 반환 형식이 없으며, 객체가 만들어질 때 적절한 시점에 자동으로 호출됩니다.
-	- 오버로딩으로 여러 개의 생성자를 선언할 수 있고, 한 생성자가 다른 생성자에게 초기화를 위임하는 방식으로도 구현할 수 있습니다. 
-	- 호출 시점에는 컴파일러가 전달된 인자를 보고 호출 대상을 결정하게 됩니다.
+  - 별도의 반환 형식이 없으며, 객체가 만들어질 때 적절한 시점에 자동으로 호출됩니다.
+  - 오버로딩으로 여러 개의 생성자를 선언할 수 있고, 한 생성자가 다른 생성자에게 초기화를 위임하는 방식으로도 구현할 수 있습니다.
+  - 호출 시점에는 컴파일러가 전달된 인자를 보고 호출 대상을 결정하게 됩니다.
 - **소멸자 (Destructor)** 는 객체의 생명주기가 끝날 때 자원을 정리하기 위해 자동으로 호출되는 멤버 함수입니다.
 - 전역 객체의 생성자는 main 함수 실행 전에 호출되고, 소멸자는 main 함수가 끝난 뒤에 호출됩니다.
 
 ```cpp
-class Number {	
+class Number {
 public:
 	// constructor
 	Number() : Number(0) { }
@@ -136,7 +136,84 @@ private:
 };
 ```
 
-## 복사(Copy) / 이동 (Move)
+
+<details>
+<summary>예제: <code>classes.cpp</code></summary>
+
+```cpp
+#include <iostream>
+
+// Struct members are public by default.
+struct Point {
+    int x = 0;
+    int y = 0;
+
+    void Print() const {
+        std::cout << "Point(" << x << ", " << y << ")" << std::endl;
+    }
+};
+
+// Class members are private by default, so public methods are used for access.
+class Number {
+public:
+    // Delegating constructor calls another constructor in the same class.
+    Number() : Number(0) {
+        std::cout << "Number()" << std::endl;
+    }
+
+    // Member initializer list initializes value_ before the constructor body runs.
+    Number(int value) : value_(value) {
+        std::cout << "Number(int)" << std::endl;
+    }
+
+    // Copy constructor creates a new object from an existing object.
+    Number(const Number &other) : value_(other.value_) {
+        std::cout << "Number(const Number &)" << std::endl;
+    }
+
+    // Destructor is called automatically when the object lifetime ends.
+    ~Number() {
+        std::cout << "~Number(): " << value_ << std::endl;
+    }
+
+    void SetValue(int value) {
+        this->value_ = value;
+    }
+
+    int GetValue() const {
+        return value_;
+    }
+
+private:
+    int value_ = 0;
+};
+
+int main() {
+    std::cout << "\nClass and struct...\n";
+
+    Point point;
+    point.x = 10;
+    point.y = 20;
+    point.Print();
+
+    Number number;
+    // Private member is changed through a public member function.
+    number.SetValue(30);
+    std::cout << "number: " << number.GetValue() << std::endl;
+
+    Number n1(1);
+    Number n2(n1);       // Calls copy constructor
+
+    std::cout << "n1: " << n1.GetValue() << std::endl;
+    std::cout << "n2: " << n2.GetValue() << std::endl;
+
+    return 0;
+}
+```
+
+</details>
+
+## 복사 / 이동
 
 클래스 타입의 객체를 함수에 값으로 전달하면, 새 객체를 만들기 위해 **복사 생성자 (Copy Constructor)** 가 호출되면서 복사가 발생할 수 있습니다.
 
@@ -212,8 +289,8 @@ Number c = a;
 Number d(30);
 Number d = a;
 
-// may cause a double-free 
-// because the compiler-generated copy assignment operator 
+// may cause a double-free
+// because the compiler-generated copy assignment operator
 // performs a shallow copy of the raw pointer.
 b = a;
 ```
@@ -221,7 +298,7 @@ b = a;
 
 !!! note "깊은 복사(Deep Copy) 와 복사 대입 연산자 (Copy Assignment Operator)"
     **소멸자 (destructor)** 와 **깊은 복사 생성자(deep copy constructor)** 를 정의한 클래스에서는 **복사 대입 연산자(copy assignment operator)** 를 직접 구현하거나 명시적으로 삭제해주어야 안전합니다.
-    
+
     별도로 처리하지 않는 경우, 컴파일러가 생성하는 기본 복사 대입 연산자가 각 멤버를 그대로 복사하면서 포인터가 가리키는 자원이 아닌 포인터의 주소만 복사하게 됩니다. 그 결과 두 개 이상의 객체가 같은 자원을 소유하게 되고, 소멸하는 과정에서 이중으로 해제(double-free)되는 문제로 이어질 수 있습니다.
 
 ```text
@@ -255,7 +332,7 @@ Destination                           ▼
 ```
 
 
-- 함수에 객체를 값으로 전달하면 호출할 때마다 객체의 복사본이 생성되어 불필요한 비용이 발생할 수 있습니다. 
+- 함수에 객체를 값으로 전달하면 호출할 때마다 객체의 복사본이 생성되어 불필요한 비용이 발생할 수 있습니다.
   이를 방지하기 위해 일반적으로 `const` 참조를 사용합니다. `const` 참조는 새로운 객체를 생성하지 않고 기존 객체를 읽기 전용으로 참조하므로, 복사 생성자 호출과 이에 따른 메모리 할당 및 해제 비용을 줄일 수 있습니다.
 
 ```cpp
@@ -357,19 +434,109 @@ Destination                           │  (no heap memory allocation)
 └──────────────────┘
 ```
 
-## 상속 (Inheritance)
+
+<details>
+<summary>예제: <code>move_semantics.cpp</code></summary>
+
+```cpp
+#include <iostream>
+#include <utility>
+
+// Explicit copy and move behavior example.
+class UniqueNumber {
+public:
+    UniqueNumber(int value) : value_(new int(value)) {
+        std::cout << "ctor: " << *value_ << std::endl;
+    }
+
+    // Copy operations are deleted to prevent two objects from owning one address.
+    UniqueNumber(const UniqueNumber &) = delete;
+    UniqueNumber &operator=(const UniqueNumber &) = delete;
+
+    // Move constructor transfers ownership from other to this new object.
+    UniqueNumber(UniqueNumber &&other) : value_(other.value_) {
+        other.value_ = nullptr;
+        std::cout << "move ctor" << std::endl;
+    }
+
+    // Move assignment releases current memory and then takes ownership from other.
+    UniqueNumber &operator=(UniqueNumber &&other) {
+        std::cout << "move assign" << std::endl;
+
+        if (this != &other) {
+            delete value_;
+            value_ = other.value_;
+            other.value_ = nullptr;
+        }
+
+        return *this;
+    }
+
+    ~UniqueNumber() {
+        delete value_;
+    }
+
+    int GetValue() const {
+        if (value_ == nullptr) {
+            return 0;
+        }
+
+        return *value_;
+    }
+
+    void Print(const char *name) const {
+        std::cout << name << ": ptr=" << value_;
+
+        if (value_ != nullptr) {
+            std::cout << ", value=" << *value_;
+        }
+
+        std::cout << std::endl;
+    }
+
+private:
+    int *value_ = nullptr;
+};
+
+int main(void) {
+    std::cout << "\nDeleted copy and move semantics...\n";
+    UniqueNumber u1(10);
+    u1.Print("u1 before: ");
+
+    // Move construction from an rvalue.
+    // Allows ownership to move instead of copying the object.
+    UniqueNumber u2(std::move(u1));
+    u1.Print("u1 after");
+    u2.Print("u2 after");
+
+    UniqueNumber u3(20);
+    u3.Print("u3 before");
+
+    // Move assignment from an rvalue.
+    u3 = std::move(u2);
+    u2.Print("u2 after");
+    u3.Print("u3 after");
+    std::cout << "u3: " << u3.GetValue() << std::endl;
+
+    return 0;
+}
+```
+
+</details>
+
+## 상속
 
 **상속 (Inheritance)** 는 객체 단위의 코드를 '재사용'하는 개념으로 기존 클래스를 바탕으로 새로운 파생 클래스를 정의해서 사용할 수 있습니다.
 
 ```cpp
 class BaseClass {
   void BaseFunction() {
-  } 
+  }
 };
 
 class DerivedClass : public BaseClass {
   void DerivedFunction() {
-  } 
+  }
 };
 ```
 
@@ -394,17 +561,17 @@ class DerivedClass : public BaseClass {
 └──────────────────────────────┘          └──────────────────────────────┘
 ```
 
-- 파생 클래스는 기본 클래스의 `public` 및 `protected` 멤버에 접근할 수 있지만 `private` 멤버에는 직접 접근할 수 없습니다. 
+- 파생 클래스는 기본 클래스의 `public` 및 `protected` 멤버에 접근할 수 있지만 `private` 멤버에는 직접 접근할 수 없습니다.
 - 파생 클래스 객체를 통해 기본 클래스의 `public` 메서드를 호출할 수도 있습니다.
-- 파생 클래스의 인스턴스가 생성될 때, 기본 클래스의 생성자도 함께 호출됩니다. 
-	- 여러 단계로 상속되는 클래스에서 생성자는 가장 하위의 파생 클래스부터 가장 상위의 기본 클래스 방향으로 호출되고, 반대 방향으로 실행됩니다. 
-	- 소멸자는 호출과 실행 모두 가장 하위의 파생 클래스부터 가장 상위의 기본 클래스 방향으로 수행됩니다. 
+- 파생 클래스의 인스턴스가 생성될 때, 기본 클래스의 생성자도 함께 호출됩니다.
+	- 여러 단계로 상속되는 클래스에서 생성자는 가장 하위의 파생 클래스부터 가장 상위의 기본 클래스 방향으로 호출되고, 반대 방향으로 실행됩니다.
+	- 소멸자는 호출과 실행 모두 가장 하위의 파생 클래스부터 가장 상위의 기본 클래스 방향으로 수행됩니다.
 
-## 오버라이딩 (Overriding)
+## 오버라이딩
 
 파생 클래스에서 기본 클래스의 함수를 재정의하는 것을 **오버라이딩 (Overriding)** 이라고 합니다.
 
-- 오버라이딩을 사용하기 위해서는 기본 클래스와 파생 클래스 함수의 **이름, 매개변수, `const` 여부**가 일치해야 합니다. 
+- 오버라이딩을 사용하기 위해서는 기본 클래스와 파생 클래스 함수의 **이름, 매개변수, `const` 여부**가 일치해야 합니다.
 ```cpp
 class Animal {
 public:
@@ -421,7 +588,7 @@ public:
 };
 ```
 
-- 기본 클래스에는 `virtual`을 명시해야 합니다. 
+- 기본 클래스에는 `virtual`을 명시해야 합니다.
   기본 클래스의 참조로 파생 클래스 객체를 다룰 때는, `virtual`을 사용해야 오버라이딩이 적용될 수 있습니다.
 ```cpp
 int main() {
@@ -453,3 +620,99 @@ int main() {
 │ VirtualMethod() <override>   │  파생 클래스 구현
 └──────────────────────────────┘
 ```
+
+
+<details>
+<summary>예제: <code>inheritance.cpp</code></summary>
+
+```cpp
+#include <iostream>
+
+class Animal {
+public:
+    Animal() {
+        std::cout << "Animal()" << std::endl;
+    }
+
+    Animal(int age) : age_(age) {
+        std::cout << "Animal(int)" << std::endl;
+    }
+
+    virtual ~Animal() {
+        std::cout << "~Animal()" << std::endl;
+    }
+
+    void SetAge(int age) {
+        age_ = age;
+    }
+
+    int GetAge() const {
+        return age_;
+    }
+
+    virtual void Speak() const = 0;
+
+protected:
+    void PrintAge() const {
+        std::cout << "Animal::PrintAge()::age: " << age_ << std::endl;
+    }
+
+private:
+    int age_ = 0;
+};
+
+class Dog : public Animal {
+public:
+    Dog() {
+        std::cout << "Dog()" << std::endl;
+    }
+
+    Dog(int age) : Animal(age) {
+        std::cout << "Dog(int)" << std::endl;
+    }
+
+    ~Dog() override {
+        std::cout << "~Dog()" << std::endl;
+    }
+
+    void PrintInfo() const {
+        std::cout << "Dog::PrintInfo() " << std::endl;
+        // Derived classes can access protected members from the base class.
+        PrintAge();
+        // ERROR: even the derived class cannot access private members from the base class.
+        // std::cout << "age: " << age_ << std::endl;
+    }
+
+    void Speak() const override {
+        std::cout << "Dog::Speak()" << std::endl;
+    }
+};
+
+
+
+int main() {
+    Dog dog(3);
+
+    std::cout << "\nAccessing public member inherited from base class...\n";
+    dog.SetAge(5);
+    std::cout << "age: " << dog.GetAge() << std::endl;
+
+    std::cout << "\nAccessing protected member used inside derived class...\n";
+    dog.PrintInfo();
+
+    // ERROR: Cannot instantiate Animal pure virtual method is unimplemented. (L31)
+    // Animal animal;
+
+    std::cout << "\nVirtual function call...\n";
+    Animal &animal_ref = dog;
+    animal_ref.Speak();
+
+    Animal *ptr = new Dog(7);
+    ptr->Speak();
+    delete ptr;
+
+    return 0;
+}
+```
+
+</details>

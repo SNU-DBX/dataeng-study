@@ -1,20 +1,19 @@
 # 7 · 빌드, 디버깅
 
 
-## Compiler
+## 컴파일러
 
-[Build, Run, and Compilation Mode](01-c-program-structure-and-compilation.md#build-run-and-compilation-mode)에서 프로그램의 전처리, 컴파일, 어셈블, 링크 과정과 주요 컴파일러 옵션을 살펴보았습니다.
- 
+[빌드 및 실행](01-c-program-structure-and-compilation.md#빌드-및-실행)에서 프로그램의 전처리, 컴파일, 어셈블, 링크 과정과 주요 컴파일러 옵션을 살펴보았습니다.  
+
 소스 파일이 하나라면 컴파일 명령을 직접 실행해도 충분합니다.
 ```sh
-gcc -Wall -Wextra -Wpedantic -std=c11 -g hello.c -o hello
+$ gcc -Wall -Wextra -Wpedantic -std=c11 -g hello.c -o hello
 ```
 
-하지만 프로그램이 여러 소스 파일로 구성되는 경우에는, 각 파일에 대한 컴파일과 링크 과정을 반복해야 합니다. 파일이 변경될 때마다 이러한 명령을 실행하는 작업은 번거롭고 실수가 발생할 확률이 높습니다.
-우리는 이와 같은 빌드 과정을 자동화하기 위해 `make` 를 사용할 수 있습니다.
+하지만 프로그램이 여러 소스 파일로 구성되는 경우에는, 각 파일에 대한 컴파일과 링크 과정을 반복해야 합니다. 파일이 변경될 때마다 이러한 명령을 실행하는 작업은 번거롭고 실수가 발생할 확률이 높습니다. 우리는 이와 같은 빌드 과정을 자동화하기 위해 `make` 를 사용할 수 있습니다.
 
 ## `make`/ Makefile
-`make` 는 `Makefile`에 작성된 규칙에 따라 명령을 실행하는 빌드 자동화 도구입니다.
+`make` 는 `Makefile`에 작성된 규칙에 따라 명령을 실행하는 빌드 자동화 도구입니다.  
 반복되는 컴파일 및 링크 명령을 자동화하고, 변경된 파일을 기준으로 필요한 대상을 다시 빌드할 수 있습니다.
 
 여기서 `make`는 `Makefile`에 정의된 파일 간의 관계를 확인하여 어떤 명령을 실행할지 결정하는 도구로, 실제 컴파일과 링크는 동일하게 컴파일러에 의해 수행됩니다.
@@ -24,10 +23,11 @@ gcc -Wall -Wextra -Wpedantic -std=c11 -g hello.c -o hello
 target: dependencies
 	recipe
 ```
+
 - **target**: 규칙을 통해 생성할 파일 또는 실행할 작업의 이름입니다.
 - **dependencies**: target을 만드는 데 필요한 파일입니다.
 - **recipe**: target을 생성하기 위해 실행할 명령입니다.
-	- **recipe** 앞의 들여쓰기는 공백이 아니라 **탭(tab)** 이어야 합니다.
+  - **recipe** 앞의 들여쓰기는 공백이 아니라 **탭(tab)** 이어야 합니다.
 
 다음은 `main.c/h`와 `hello.c/h`를 각각 목적 파일로 컴파일한 뒤, 하나의 `main` 실행 파일로 링크하는 Makefile 예시입니다.
 ```makefile
@@ -45,15 +45,17 @@ main.o: main.c main.h
 hello.o: hello.c hello.h
 	$(CC) $(CFLAGS) -c hello.c -o hello.o
 ```
+
 - `$(TARGET)`: 최종 실행 파일
 - `$(OBJECTS)`: 컴파일 과정에서 생성된 오브젝트 파일(`.o`)
 
 `Makefile`이 있는 디렉터리에서 `make`를 실행하면 첫 번째 target인 `main`을 빌드합니다.
 ```sh
-make
+$ make
 ```
 
 `make`는 **target**과 **dependency**의 수정 시간을 비교해서 필요한 작업만 수행합니다.
+
 - **target** 파일이 존재하지 않으면 해당 규칙의 **recipe**를 실행합니다.
 - **dependency**가 **target**보다 최근에 변경되었다면 **target**을 다시 생성합니다.
 - 변경되지 않은 파일에 대한 **recipe**는 실행하지 않습니다.
@@ -69,24 +71,26 @@ make
 clean:
 	rm -f $(TARGET) $(OBJECTS)
 ```
+
 - `.PHONY`: 실제 파일 이름이 아닌, 실행할 작업 이름임을 `make` 에 알려주는 구문 (파일의 존재 여부와 관계없이 항상 명령을 실행합니다)
 
 ```sh
-make clean
+$ make clean
 ```
 
 ## GDB 를 사용한 디버깅
 
-**GDB(GNU Debugger)** 는 실행 중인 프로그램의 동작과 내부 상태를 확인할 수 있는 디버거입니다.
-코드만 읽거나 출력문을 추가하는 방법으로는 문제가 발생한 정확한 위치와 런타임의 프로그램 상태를 파악하기 어려울 수 있습니다.
+**GDB(GNU Debugger)** 는 실행 중인 프로그램의 동작과 내부 상태를 확인할 수 있는 디버거입니다.  
+코드만 읽거나 출력문을 추가하는 방법으로는 문제가 발생한 정확한 위치와 런타임의 프로그램 상태를 파악하기 어려울 수 있습니다.  
 
 GDB를 사용하면 특정 위치에서 멈추거나 한 줄씩 실행하면서 변수와 호출 스택을 확인하고 프로그램이 예상과 다르게 동작하는 원인을 단계적으로 추적할 수 있습니다.
 
 GDB에서 제공하는 소스 라인, 지역 변수/타입 등의 정보를 보기 위해서는 먼저 `-g` 옵션으로 프로그램을 컴파일해야 합니다.
 
 ```sh
-cc -std=c11 -Wall -Wextra -g main.c -o main
-gdb ./main
+$ cc -std=c11 -Wall -Wextra -g main.c -o main
+
+$ gdb ./main
 ```
 
 `Makefile` 을 사용하는 경우라면 `CFLAGS`에 `-g`를 반드시 지정해주어야 합니다.
@@ -135,9 +139,11 @@ macOS의 LLDB에서도 유사한 명령을 사용할 수 있습니다.
 | `print value` | `print value` | 변수 값을 출력합니다. |
 | `backtrace` | `bt` | 호출 스택을 출력합니다. |
 
-## AddressSanitizer (ASan)
+## `AddressSanitizer` (ASan)
 
-**AddressSanitizer**는  프로그램 실행 중에 잘못된 메모리에 접근하는 지점을 탐지하는 도구입니다.
+`AddressSanitizer`는 프로그램 실행 중 발생하는 메모리 접근 오류를 탐지하기 위한 도구입니다.  
+문제가 발생한 지점에서 프로그램을 중단하고, 어떤 종류의 메모리 오류가 어느 호출 경로에서 발생했는지 출력해 디버깅을 돕습니다.
+
 주로 동적 할당/해제와 관련해서 발생하는 다음과 같은 문제들을 찾을 때 도움이 될 수 있습니다.
 
 - 배열 범위를 벗어난 접근 (buffer overflow)
@@ -145,14 +151,14 @@ macOS의 LLDB에서도 유사한 명령을 사용할 수 있습니다.
 - 같은 메모리를 두 번 해제 (double-free)
 - 잘못된 포인터를 `free`에 전달
 
-컴파일할 때 `-fsanitize=address` 옵션을 추가하여 사용할 수 있습니다.
+컴파일할 때 `-fsanitize=address` 옵션을 추가하여 사용할 수 있습니다.  
 더 자세한 추가 옵션은 [gcc - Program Instrumentation Options 문서](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html)를 참고하세요.
 ```sh
-cc -std=c11 -Wall -Wextra -g \
+$ cc -std=c11 -Wall -Wextra -g \
   -fsanitize=address \
   main.c -o main 
 
-./main
+$ ./main
 ```
 
 !!! note "Memory Leak Detection"

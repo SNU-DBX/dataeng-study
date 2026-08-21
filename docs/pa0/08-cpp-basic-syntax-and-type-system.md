@@ -1,17 +1,16 @@
-<!-- TODO: 잘못된 내용 수정하기, 텍스트 다이어그램으로 바꾸기 -->
 # 8 · C++ 기본 문법과 타입 시스템
 
-## 객체 지향 (Object-Oriented) 언어
+## 객체 지향 언어
 
-C++은 **프로그램의 모음을 조합해서 실행하는 객체지향 언어**라는 점에서 프로그램이 실행되는 순서를 중심으로 설계된 절차지향 언어인 C와는 다른 언어입니다.
+C++은 **프로그램의 모음을 조합해서 실행하는 객체지향 (Object-Oriented) 언어**라는 점에서 프로그램이 실행되는 순서를 중심으로 설계된 절차지향 언어인 C와는 다른 언어입니다.
 (C의 기본적인 문법은 일부 동일하게 가져가고 있습니다)
 
 객체지향 프로그래밍에서는 **클래스(Class)** 라는 형식을 정의하고,
-프로그램이 실행되는 동안 클래스에 대한 **인스턴스(Instance)** 를 생성해서 사용합니다. 
+프로그램이 실행되는 동안 클래스에 대한 **인스턴스(Instance)** 를 생성해서 사용합니다.
 여기서 인스턴스는 실제 메모리에 존재하며 상태와 기능을 가집니다.
 
 ## 자원 동적 할당: `new` / `delete`
-C에서 동적 메모리를 다룰 때 사용하는 `malloc`과 `free` 대신 C++에서는 `new`와 `delete`를 사용합니다. 
+C에서 동적 메모리를 다룰 때 사용하는 `malloc`과 `free` 대신 C++에서는 `new`와 `delete`를 사용합니다.
 `new` 연산자는 필요한 메모리를 확보하면서 객체의 생성자를 호출하고, `delete` 는 객체의 소멸자를 호출한 뒤에 메모리를 해제합니다.
 (이 때, 배열 형태로 생성한 객체는 반드시 배열로 삭제해야 합니다)
 
@@ -66,17 +65,61 @@ delete[] array;
         └─────────────────────────┘
 ```
 
-
-
 !!! note "현대 C++의 동적 메모리 관리"
     현대 C++에서는 직접 `new`와 `delete`를 사용하기보다는
     자원의 획득과 해제를 객체의 생명주기와 결합해서 사용하는 **RAII (Resource Acquisition is Initialization)** 설계 원칙과 스마트 포인터를 사용합니다.
     이 내용은 [[4. 자원 관리와 동시성]]에서 더 자세히 다루겠습니다.
 
-## 참조자 (Reference)
+
+<details>
+<summary>예제: <code>new_delete.cpp</code></summary>
+
+```cpp
+#include <iostream>
+
+int main(void) {
+    // Dynamically allocate an integer and store its address
+    int *data = new int;
+    // Assign value to allocated memory
+    *data = 5;
+
+    int *n_data = new int(10);
+
+    std::cout << *data << std::endl;
+    std::cout << *n_data << std::endl;
+
+    int size = 5;
+    int *array = new int[size];
+
+    for (int i = 0; i < size; i++) {
+        array[i] = (i + 1) * 10;
+    }
+
+    std::cout << "\nArray allocated with new[]..." << std::endl;
+    for (int i = 0; i < size; i++) {
+        std::cout << array[i] << " ";
+    }
+    std::cout << std::endl;
+
+    delete data;
+    delete n_data;
+    delete[] array;
+
+    // ERROR: dereferencing a dangling pointer will cause undefined behavior
+    // std::cout << *data;
+    // ERROR: deallocating the memory again will also lead to undefined behavior
+    // delete data;
+
+    return 0;
+}
+```
+
+</details>
+
+## 참조자
 
 기존 변수에 대하여 별칭(alias)을 사용할 수 있는데 이것을 **참조자 (reference; `&`)** 라고 합니다.
-선언할 때 반드시 대상을 지정해야 하며, 선언 이후에는 다른 변수를 가리키도록 변경할 수 없습니다. 
+선언할 때 반드시 대상을 지정해야 하며, 선언 이후에는 다른 변수를 가리키도록 변경할 수 없습니다.
 참조자를 통해 값을 변경하면 참조 대상이 아니라 원본의 값을 변경합니다.
 
 ```cpp
@@ -101,9 +144,53 @@ int main(void) {
 }
 ```
 
-## 함수 (Function)
 
-함수를 호출하기 위해서는 호출 지점에서 함수의 선언을 알 수 있어야 합니다.
+<details>
+<summary>예제: <code>references.cpp</code></summary>
+
+```cpp
+#include <iostream>
+
+void Add(int &num) {
+    num = num + 1;
+}
+
+int main() {
+    int a = 10;
+    int c = 12;
+
+    // B is another name for a
+    int &b = a;
+
+    std::cout << "Initial values...\n";
+    std::cout << "a: " << a << " (&a: " << &a << ")" << std::endl;
+    std::cout << "b: " << b << " (&b: " << &b << ")" << std::endl;
+    std::cout << "c: " << c << " (&c: " << &c << ")" << std::endl;
+
+    // This copies c's value into a; does not make b refer to c.
+    b = c;
+
+    std::cout << "\nAfter b = c...\n";
+    std::cout << "a: " << a << " (&a: " << &a << ")" << std::endl;
+    std::cout << "b: " << b << " (&b: " << &b << ")" << std::endl;
+    std::cout << "c: " << c << " (&c: " << &c << ")" << std::endl;
+
+    Add(a);
+
+    std::cout << "\nAfter Add(a)...\n";
+    std::cout << "a: " << a << " (&a: " << &a << ")" << std::endl;
+    std::cout << "b: " << b << " (&b: " << &b << ")" << std::endl;
+    std::cout << "c: " << c << " (&c: " << &c << ")" << std::endl;
+
+    return 0;
+}
+```
+
+</details>
+
+## 함수
+
+**함수 (Function)** 를 호출하기 위해서는 호출 지점에서 함수의 선언을 알 수 있어야 합니다.
 - 이름
 - 반환 형식(return type)
 - 매개변수 목록(parameter)
@@ -127,7 +214,7 @@ int TestFunc(int p1, int p2 = 2) {
 }
 
 int main() {
-	TestFunc(10);        // p1 = 10 
+	TestFunc(10);        // p1 = 10
 	TestFunc(10, 5);     // p1 = 10, p2 = 5
 }
 ```
@@ -153,20 +240,19 @@ int main() {
 }
 ```
 
-## 네임스페이스 (Namespace)
+## 네임스페이스
 
-**네임스페이스 (Namespace)** 는 함수, 변수, 클래스를 하나의 논리적인 범주로 묶는 문법입니다.
-
-서로 다른 네임스페이스 안에서는 이름과 매개변수 형태가 같은 함수도 각각 정의할 수 있습니다.
+**네임스페이스 (Namespace)** 는 함수, 변수, 클래스를 하나의 논리적인 범주로 묶는 문법입니다.  
+서로 다른 네임스페이스 안에서는 이름과 매개변수 형태가 같은 함수도 각각 정의할 수 있습니다.  
 또한 네임스페이스는 중첩해서 정의하고, 범위 지정 연산자 `::`로 원하는 이름을 선택해서 사용할 수 있습니다.
 
 ```cpp
-namespace A {
+namespace A {
 int data = 100;
 
 	namespace B {
 		int data = 200;
-		
+
 		namespace C {
 			int data = 300;
 		}
@@ -177,7 +263,7 @@ int main() {
 	cout << "A::data " << A::data << endl;              // 100
 	cout << "A::B::data " << A::B::data << endl;        // 200
 	cout << "A::B::C::data " << A::B::C::data << endl;  // 300
-	
+
 	return 0;
 }
 ```
@@ -192,3 +278,55 @@ int main() {
 	cout << "using namespace std" << endl;
 }
 ```
+
+
+<details>
+<summary>예제: <code>namespaces.cpp</code></summary>
+
+```cpp
+#include <iostream>
+
+void foo(int a) {
+    std::cout << "Print from foo: " << a << std::endl;
+}
+namespace A {
+    int data = 100;
+
+    void foo(int a) {
+        std::cout << "Print from A::foo: " << a << std::endl;
+    }
+
+    namespace B {
+        int data = 200;
+
+        void bar(int a) {
+            std::cout << "Print from A::B::bar: " << a << std::endl;
+        }
+    }
+}
+
+namespace C {
+    void foo(int a) {
+        std::cout << "Print from C::foo: " << a << std::endl;
+    }
+}
+
+
+int main() {
+    foo(10);        // Implicit global function usage
+    ::foo(10);      // Explicit global function usage
+
+    A::foo(10);
+    C::foo(10);
+
+    A::B::bar(20);
+
+    std::cout << std::endl;
+    std::cout << "A::data: " << A::data << std::endl;
+    std::cout << "A::B::data: " << A::B::data << std::endl;
+
+    return 0;
+}
+```
+
+</details>
