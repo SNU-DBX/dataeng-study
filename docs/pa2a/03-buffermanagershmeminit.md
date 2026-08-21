@@ -268,3 +268,9 @@ BufferManagerShmemSize(void)
     return size;
 }
 ```
+
+### 버퍼풀 메모리 레이아웃과 기본 구조
+
+최종적으로 위의 과정을 거쳐서 할당된 버퍼 풀의 메모리 레이아웃은 아래 그림(좌측)과 같다. 그리고 기본 구조는 그림(우측)과 같이 구성되는데, 현재로서는 완전히 이해가 되지 않는다 해도 괜찮다.
+
+![bufferpool-memory](./images/bufferpool_datastructure.png)
