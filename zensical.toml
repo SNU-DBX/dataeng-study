@@ -48,7 +48,6 @@ nav = [
     { "I · Where the pool comes from" = [
       "pa2a/02-shared-memory.md",
       "pa2a/03-buffermanagershmeminit.md",
-      "pa2a/04-buf-id-buffer-block.md",
       "pa2a/05-state-word.md",
     ] },
     { "II · The read path" = [
@@ -71,6 +70,10 @@ nav = [
     { "V · The assignment" = [
       "pa2a/17-delta.md",
       "pa2a/18-drills.md",
+    ] },
+    { "VI · 부록" = [
+      "pa2a/19-read-stream.md",
+      "pa2a/20-buffer-id.md",
     ] },
   ] },
   { "Markdown in 5min" = "markdown.md" },
