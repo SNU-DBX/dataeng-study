@@ -43,7 +43,7 @@ struct Student {
 
 int main(void) {
 	struct Student student = {"Kim", 20260001, 91.5};
-	student.id = "20260001";    // access with dot operator
+	student.id = 20260001;    // access with dot operator
 }
 ```
 
