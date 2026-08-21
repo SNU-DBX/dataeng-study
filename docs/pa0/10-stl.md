@@ -62,10 +62,10 @@ bucket array              elements
 
 주요하게 사용될 수 있는 컨테이너들을 소개하겠습니다.
 ### `std::vector`
-연속된 메모리에 같은 자료형의 원소를 저장하는 동적 배열입니다. 
+연속된 메모리에 같은 자료형의 원소를 저장하는 동적 배열입니다.
 인덱스를 통한 접근은 $O(1)$, 원소를 추가하는 연산은 평균적으로 $O(1)$입니다. 반면 중간에 원소를 삽입하거나 삭제하면 뒤쪽 원소를 이동해야 하므로 $O(n)$의 비용이 발생합니다.
 
-저장 공간이 부족해지면 더 큰 메모리를 확보한 뒤 기존 원소를 이동하는 재할당(reallocation)이 일어날 수 있고 이 때 기존 원소를 가리키던 포인터, 참조자, 반복자는 무효화될 수 있습니다. 
+저장 공간이 부족해지면 더 큰 메모리를 확보한 뒤 기존 원소를 이동하는 재할당(reallocation)이 일어날 수 있고 이 때 기존 원소를 가리키던 포인터, 참조자, 반복자는 무효화될 수 있습니다.
 
 ```cpp
 #include <iostream>
@@ -134,8 +134,8 @@ numbers.erase(numbers.begin() + 1)
 ```
 
 ### `std::set`
-중복되지 않는 원소를 정렬된 상태로 관리하는 연관 컨테이너입니다. 
-일반적으로 균형 이진 탐색 트리로 구현되며 삽입, 삭제, 검색 모두 $O(\log n)$입니다. 
+중복되지 않는 원소를 정렬된 상태로 관리하는 연관 컨테이너입니다.
+일반적으로 균형 이진 탐색 트리로 구현되며 삽입, 삭제, 검색 모두 $O(\log n)$입니다.
 원소는 정렬 기준에서 key 역할을 하기 때문에 반복자를 통해 직접 수정할 수 없고 값을 변경하려면 기존 원소를 삭제한 뒤 새 값을 삽입해야 합니다.
 
 - `insert(value)`: 원소를 삽입합니다. 이미 같은 값이 있으면 새 원소를 추가하지 않습니다.
@@ -188,7 +188,7 @@ numbers.insert(40)
 ```
 
 ### `std::unordered_map`
-key와 value를 쌍으로 가지는 저장하는 해시 기반 연관 컨테이너입니다. key를 이용한 삽입, 삭제, 검색은 평균적으로 $O(1)$이지만 해시 충돌이 많으면 최악의 경우 $O(n)$이 될 수 있습니다. 
+key와 value를 쌍으로 가지는 저장하는 해시 기반 연관 컨테이너입니다. key를 이용한 삽입, 삭제, 검색은 평균적으로 $O(1)$이지만 해시 충돌이 많으면 최악의 경우 $O(n)$이 될 수 있습니다.
 (원소의 순서는 보장되지 않으므로 정렬된 순서가 필요하다면 `std::map`을 고려해야 합니다)
 
 - `insert({key, value})`: key-value 쌍을 삽입합니다. (이미 같은 key가 있으면 삽입하지 않습니다)
@@ -276,14 +276,56 @@ int main()
     vector<int> v = {10, 20, 30, 40};
 
     for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
-        std::cout << *it << " "; 
+        std::cout << *it << " ";
     }
 
     return 0;
 }
 ```
 
-## `auto` keyword
+
+<details>
+<summary>예제: <code>iterator.cpp</code></summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> numbers = {10, 20, 30, 40};
+
+    // Iterator points to an element inside a container.
+    std::vector<int>::iterator iter = numbers.begin();
+
+    // Dereference (*) accesses the current element.
+    std::cout << "*iter: " << *iter << std::endl;
+
+    // Increment (++) moves the iterator to the next element.
+    ++iter;
+    std::cout << "*iter after ++iter: " << *iter << std::endl;
+
+    std::cout << "\nPrinting vector with iterator...\n";
+    for (std::vector<int>::iterator it = numbers.begin(); it != numbers.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+
+    int array[4] = {1, 2, 3, 4};
+    int *ptr = array;
+
+    // A pointer can also act like an iterator for an array.
+    std::cout << "\nPointer as iterator...\n";
+    std::cout << "*ptr: " << *ptr << std::endl;
+    ++ptr;
+    std::cout << "*ptr after ++ptr: " << *ptr << std::endl;
+
+    return 0;
+}
+```
+
+</details>
+
+## `auto`
 `auto`는 변수의 초기화 표현식을 기준으로 컴파일러가 자료형을 자동으로 추론하도록 하는 키워드입니다.
 자료형을 간단하게 표현할 수 있고, `for` 구문에서도 유용하게 사용할 수 있습니다.
 
@@ -303,3 +345,58 @@ int main() {
 ```
 
 하지만 실제 자료형을 명확히 인지하지 못한 상태에서 사용하게 되면, 의도하지 않은 복사나 형식 오류가 발생할 수 있으므로 주의해야 합니다.
+
+
+<details>
+<summary>예제: <code>auto.cpp</code></summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+class ExampleClass {
+public:
+    ExampleClass() {}
+    ExampleClass(int param) : data(param) {}
+
+    void Print() const {
+        std::cout << data << std::endl;
+    }
+
+private:
+    int data = 0;
+};
+
+int main() {
+    // Using auto to declare basic variables
+    auto a = 1;
+    auto b = 3.2;
+
+    auto c = std::string("Hello");
+
+    // Using auto to declare class object
+    ExampleClass ec;
+    auto obj1 = ExampleClass(10);
+    std::cout << "\nPrinting class member with auto...\n";
+    obj1.Print();
+
+    std::vector<int> vec = {10, 20, 30, 40};
+
+    std::cout << "\nPrinting elements in vector with iterator...\n";
+    for (std::vector<int>::iterator it = vec.begin(); it != vec.end(); ++it) {
+        std:: cout << *it << " ";
+    }
+    std::cout << std::endl;
+
+    // Using auto for std::vector iteration
+    std::cout << "\nPrinting elements in vector with auto...\n";
+    for (const auto& elem : vec) {
+      std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+```
+
+</details>

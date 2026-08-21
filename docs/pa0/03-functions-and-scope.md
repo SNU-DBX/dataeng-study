@@ -1,6 +1,6 @@
 # 3 · 함수와 유효 범위
 
-## Function
+## 함수
 
 **함수(function)** 는 특정 동작을 수행하는 단위입니다.
 함수를 사용하면 프로그램을 작은 단위로 분리하고, 같은 동작을 여러 곳에서 재사용할 수 있습니다.
@@ -11,7 +11,7 @@ C 언어에서는:
 - **함수의 header에는 매개변수와 반환값의 자료형을 명시적으로 작성** 해야 합니다.
 - 함수를 여러 번 선언할 수 있지만, **일반적으로 하나의 프로그램에서는 한 번만 정의** 합니다.
 
-### Basic Structure
+### 기본 구조
 ```c
 //  ①          ②            ③
 return_type function_name(parameter_list) {
@@ -21,18 +21,18 @@ return_type function_name(parameter_list) {
 }
 ```
 
-① **return type**: 함수가 실행된 후 반환되는 값의 자료형 (e.g. int, float, void, etc.)  
-② **function_name**: 함수의 이름  
-③ **parameter_list**: 함수 호출 시 전달받는 값  
-④ **function body**: 함수가 실제로 호출하는 코드  
-⑤ **return**: 함수를 호출한 곳으로 결과값을 반환  
+① **return type**: 함수가 실행된 후 반환되는 값의 자료형 (e.g. int, float, void, etc.)
+② **function_name**: 함수의 이름
+③ **parameter_list**: 함수 호출 시 전달받는 값
+④ **function body**: 함수가 실제로 호출하는 코드
+⑤ **return**: 함수를 호출한 곳으로 결과값을 반환
 
 
 !!! note "`void`"
     `void` 함수는 별도의 값을 반환하지 않고, `return;` 만 사용해서 함수를 종료합니다.
     특정 작업만 수행하고 종료하면 되는 함수에 사용합니다.
 
-### Function Declaration & Definition
+### 선언 및 정의
 ```c
 #include <stdio.h>
 
@@ -51,7 +51,7 @@ int main(void) {
 	// pass arguments to parameter and execute function body
 	int result = add(3, 5);
 	printf("%d\n", result);
-	
+
 	return 0;
 }
 ```
@@ -66,21 +66,21 @@ int main(void) {
     int add(int x, int y) {
     	return x + y;
     }
-    
+
     int main(void) {
     	int result = add(3, 5);   // Function call
     	printf("%d\n", result);
-    	
+
     	return 0;
     }
     ```
 
-### Function Parameters and Arguments
+### 매개변수와 인자
 - **매개변수(parameter)**: 함수 정의에 선언되고, 함수가 호출될 때 전달받는 변수입니다.
 - **인자(argument)**: 함수를 호출할때 실제로 전달하는 값입니다.
 	- 인자의 개수와 타입은 함수 원형과 맞아야 합니다.
 	- 각 인자는 대응하는 매개변수 타입으로 변환됩니다.
-	
+
 ```c
 int square(int value) { // parameter
 	return value * value;
@@ -102,15 +102,15 @@ printf("%d\n", number); // 10 (value itself is not modified)
 ```
 
 
-## Function Call Mechanism: Stack Frame
-함수 호출은 서로 중첩되며, 가장 마지막에 호출된 함수가 가장 먼저 종료됩니다. 이러한 **LIFO(Last In, First Out)** 순서를 관리하기 위해 일반적인 C 실행 환경에서는 호출 스택(call stack)을 사용합니다.
+## 함수 호출 메커니즘
+함수 호출은 서로 중첩되며, 가장 마지막에 호출된 함수가 가장 먼저 종료됩니다. 이러한 **LIFO(Last In, First Out)** 순서를 관리하기 위해 일반적인 C 실행 환경에서는 **호출 스택(call stack)**을 사용합니다.
 
-- 함수를 호출하면 해당 호출에 필요한 스택 프레임(stack frame)이 호출 스택에 추가(push)됩니다.
+- 함수를 호출하면 해당 호출에 필요한 **스택 프레임(stack frame)** 이 호출 스택에 추가(push)됩니다.
 - 함수가 반환되면 해당 스택 프레임이 제거(pop)되고 호출한 함수의 실행을 이어갑니다.
 - 스택은 일반적으로 낮은 메모리 주소 방향으로 증가하지만, 실제 방향과 배치는 시스템 및 컴파일러에 따라 달라질 수 있습니다.
 
-### Anatomy of a Stack Frame
-스택 프레임(stack frame)은 한 번의 함수 호출에 필요한 정보를 저장하는 메모리 영역이며, activation record라고도 합니다. 일반적으로 매개변수, 반환 주소, 이전 프레임 정보, 지역 변수 등이 포함되지만 실제 구성은 CPU, 호출 규약, 컴파일러 최적화에 따라 달라집니다.
+### 스택 프레임
+**스택 프레임(stack frame)** 은 한 번의 함수 호출에 필요한 정보를 저장하는 메모리 영역이며, activation record라고도 합니다. 일반적으로 매개변수, 반환 주소, 이전 프레임 정보, 지역 변수 등이 포함되지만 실제 구성은 CPU, 호출 규약, 컴파일러 최적화에 따라 달라집니다.
 
 ```c
 #include <stdio.h>
@@ -154,11 +154,11 @@ FP ───▶ │ saved frame information │  호출자의 프레임 복원 �
 5. 반환값 `8`이 `main`의 지역 변수 `sum`에 저장됩니다.
 
 !!! note "실제 Stack Frame"
-    위 그림은 스택 프레임의 동작을 설명하기 위한 개념적 모델입니다. 
+    위 그림은 스택 프레임의 동작을 설명하기 위한 개념적 모델입니다.
 	실제 프로그램에서는 매개변수와 반환값이 레지스터를 통해 전달되거나, 최적화로 지역 변수 및 스택 프레임 자체가 생략될 수 있습니다.
 
-### Recursive Function
-재귀 함수(recursive function)는 함수 내부에서 자기 자신을 다시 호출하는 함수입니다. 
+### 재귀 함수
+**재귀 함수(recursive function)** 는 함수 내부에서 자기 자신을 다시 호출하는 함수입니다.
 
 ```c
 unsigned long long factorial(unsigned int n) {
@@ -173,11 +173,39 @@ unsigned long long factorial(unsigned int n) {
 재귀 호출을 끝내는 종료 조건(base case)을 작성하지 않는 경우, 함수 호출(recursive case) 이 무한으로 반복될 수 있습니다.
 
 !!! note "스택 오버플로우 (Stack Overflow)"
-    재귀 호출마다 새로운 함수 호출에 대한 스택 프레임이 쌓이게 됩니다. 
-    스택 크기는 제한적이기 때문에, 함수 호출이 연속적으로 발생하다가 스택 공간이 꽉 찬 경우 더 이상 함수를 호출할 수 없게 될 수 있습니다.  
+    재귀 호출마다 새로운 함수 호출에 대한 스택 프레임이 쌓이게 됩니다.
+    스택 크기는 제한적이기 때문에, 함수 호출이 연속적으로 발생하다가 스택 공간이 꽉 찬 경우 더 이상 함수를 호출할 수 없게 될 수 있습니다.
     우리는 이것을 **스택 오버플로우 (Stack Overflow)** 라고 합니다.
 
-## Scope 
+
+<details>
+<summary>예제: <code>recursive_function.c</code></summary>
+
+```c
+#include <stdio.h>
+
+unsigned int factorial(unsigned int n) {
+  // A condition that stops the recursion. (best case)
+  if (n == 0) {
+    return 1;
+  }
+
+  // Reduces the problem and calls the function itself. (recursive case)
+  return n * factorial(n - 1);
+}
+
+int main(void) {
+  for (unsigned int i = 0; i <= 10; i++) {
+    printf("%u! = %u\n", i, factorial(i));
+  }
+
+  return 0;
+}
+```
+
+</details>
+
+## 유효 범위
 스코프(scope)란 변수가 접근 가능한 코드의 범위, 즉 변수가 존재할 수 있는 범위를 의미합니다.
 
 | Type             | Description                                                                                          | Example               |
@@ -229,7 +257,7 @@ int main(void) {
 
 	static_counter();
 	static_counter();
-	
+
 	file_counter();
 	file_counter();
 
@@ -254,7 +282,7 @@ int main(void) {
     ```c
     // counter.h
     extern int global_count;
-    
+
     // counter.c
     int global_count = 0;
     ```
