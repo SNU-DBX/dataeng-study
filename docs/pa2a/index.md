@@ -78,8 +78,8 @@ assignment is partly about teaching.
 
 **Part II · The read path, and the machinery you delete**
 
-- [06 · From `ReadBuffer()` down to `BufferAlloc()`](06-read-path.md)
-- [07 · Inside `BufferAlloc()`](07-bufferalloc.md)
+- [06 · 버퍼 풀을 쓰는 쪽에서 본 API](06-read-path.md)
+- [07 · 읽기 연산의 뼈대 — `StartReadBuffers()`에서 `BufferAlloc()`까지](07-bufferalloc.md)
 - [08 · The triangle: tag ⇄ hash table ⇄ partition lock](08-tag-table-lock.md)
 - [09 · Making room: the clock sweep](09-clock-sweep.md)
 - [10 · Pin, content lock, header spinlock](10-pin-lock-spinlock.md)
@@ -104,4 +104,4 @@ assignment is partly about teaching.
 **부록**
 
 - [19 · 읽기 스트림(`read_stream.c`)](19-read-stream.md)
-- [20 · 같은 프레임을 부르는 세 가지 이름](20-buf-id-buffer-block.md)
+- [20 · 같은 프레임을 부르는 세 가지 이름](20-buffer-id.md)
