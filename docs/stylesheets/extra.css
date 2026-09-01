@@ -1,0 +1,46 @@
+/* ---------------------------------------------------------------------------
+ * Custom "lens" admonition — what a piece of code becomes in your assignment.
+ * Ochre, to distinguish it from note (blue) and danger (red).
+ * ------------------------------------------------------------------------ */
+
+:root {
+  --md-admonition-icon--lens: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>');
+}
+
+.md-typeset .admonition.lens,
+.md-typeset details.lens {
+  border-color: #a8641f;
+}
+
+.md-typeset .lens > .admonition-title,
+.md-typeset .lens > summary {
+  background-color: rgba(168, 100, 31, 0.1);
+}
+
+.md-typeset .lens > .admonition-title::before,
+.md-typeset .lens > summary::before {
+  background-color: #a8641f;
+  -webkit-mask-image: var(--md-admonition-icon--lens);
+          mask-image: var(--md-admonition-icon--lens);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.lens,
+[data-md-color-scheme="slate"] .md-typeset details.lens {
+  border-color: #d59b58;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .lens > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset .lens > summary {
+  background-color: rgba(213, 155, 88, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .lens > .admonition-title::before,
+[data-md-color-scheme="slate"] .md-typeset .lens > summary::before {
+  background-color: #d59b58;
+}
+
+/* ASCII-art diagrams: keep them readable and horizontally scrollable, and do
+ * not let syntax highlighting colour them. */
+.md-typeset pre > code {
+  tab-size: 4;
+}
