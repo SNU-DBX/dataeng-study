@@ -45,6 +45,30 @@ nav = [
       "pa0/18-concurrency.md" 
     ] },
   ] },
+  { "PA1 · PostgreSQL Heap" = [
+    "pa1/index.md",
+    { "I · 세팅" = [
+      "pa1/01-environment-setup.md",
+    ] },
+    { "II · 파일과 블록" = [
+      "pa1/02-relation-files.md",
+      "pa1/03-block-io.md",
+    ] },
+    { "III · 페이지와 라인 포인터" = [
+      "pa1/04-page-layout.md",
+      "pa1/05-line-pointers.md",
+      "pa1/06-reading-a-page-by-hand.md",
+    ] },
+    { "IV · 튜플과 컬럼" = [
+      "pa1/07-tuple-header.md",
+      "pa1/08-column-layout.md",
+      "pa1/09-null-bitmap-and-alignment.md",
+      "pa1/10-varlena.md",
+    ] },
+    { "V · 테이블 훑기" = [
+      "pa1/11-sequential-scan.md",
+    ] },
+  ] },
 ]
 
 extra_css = ["stylesheets/extra.css"]

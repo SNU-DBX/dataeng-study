@@ -15,6 +15,12 @@ icon: lucide/database
     ---
 
     C/C++ 및 시스템 프로그래밍 기초.
+
+-   **[PA1 — PostgreSQL Heap](pa1/index.md)**
+
+    ---
+
+    PostgreSQL이 테이블을 디스크에 저장하고 읽는 방식.
 </div>
 
 
