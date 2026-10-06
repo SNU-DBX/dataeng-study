@@ -508,7 +508,7 @@ again:
     PinBuffer_Locked(buf_hdr);
 ```
 
-`StrategyGetBuffer()`는 순수하게 희생양 프레임을 **선정**해서 돌려주는 함수다. `src/backend/storage/buffer/freelist.c`에 있는데, 버퍼 교체 정책에 대해서는 [§09](09-replacement-strategy.md)에서 따로 다룬다.** 
+`StrategyGetBuffer()`는 순수하게 희생양 프레임을 **선정**해서 돌려주는 함수다. `src/backend/storage/buffer/freelist.c`에 있는데, 버퍼 교체 정책에 대해서는 [§09](09-replacement-strategy.md)에서 따로 다룬다.
 
 주석에서 나와있듯 `StrategyGetBuffer()`는 헤더 스핀락을 쥔 채로 프레임을 돌려준다. 그 이유는 헤더 스핀락을 놓는 순간 다른 백엔드가 그 프레임에 핀을 걸 수 있기 때문이다. 그래서 핀이 걸리지 않은, 마음대로 써도 되는 상태로 유지해야 하며, 이는 `Assert()`를 통해서 재확인된다. 그래서 `PinBuffer_Locked()`는
 이미 스핀락이 잡혀 있다고 가정하고 핀을 올린 뒤 스핀락을 풀어 주게 된다.
@@ -699,11 +699,3 @@ BufferAlloc(smgr, forkNum, 42, strategy, &found)
 
     * `BufferAlloc()`이 파티션 락을 **쥔 채로** `GetVictimBuffer()`를 부르도록 바꾸면 간편할 텐데 그렇게 하지 않는 이유는?
     * `GetVictimBuffer()`의 세 `goto again`은 모두 "이미 한 일을 버리고 처음부터"다. 그중 가장 비싼 것은 어느 것인가?
-
-## 앞으로 볼 것
-
-| | 다룰 내용 |
-| --- | --- |
-| [§09](09-replacement-strategy.md) | 클럭 스윕과 교체 정책 |
-| §11(준비 중) | 핀, 내용 락, 헤더 스핀락 — 세 가지가 어떻게 다른가 |
-| §12(준비 중) | `FlushBuffer()`가 지켜야 하는 WAL 규칙 |
