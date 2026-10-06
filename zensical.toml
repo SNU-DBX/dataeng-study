@@ -69,6 +69,32 @@ nav = [
       "pa1/11-sequential-scan.md",
     ] },
   ] },
+  { "PA2 Spec" = [
+    "pa2-spec/setup.md",
+    "pa2-spec/phase1.md",
+  ] },
+  { "PA2 Study" = [
+    "pa2-study/index.md",
+    { "버퍼 풀이란" = [
+      "pa2-study/01-why-a-buffer-pool.md",
+    ] },
+    { "I · 버퍼 풀의 구성요소" = [
+      "pa2-study/02-shared-memory.md",
+      "pa2-study/03-buffermanagershmeminit.md",
+      "pa2-study/04-buffer-state.md",
+      "pa2-study/05-pin-lock-lwlock.md",
+    ] },
+    { "II · 버퍼 풀 할당, 교체, 읽기" = [
+      "pa2-study/06-buffer-from-user-perspective.md",
+      "pa2-study/07-buffer-read-path.md",
+      "pa2-study/08-buffer-alloc.md",
+      "pa2-study/09-replacement-strategy.md",
+    ] },
+    { "부록" = [
+      "pa2-study/20-read-stream.md",
+      "pa2-study/21-buffer-id.md",
+    ] },
+  ] },
 ]
 
 extra_css = ["stylesheets/extra.css"]
