@@ -546,7 +546,7 @@ contrib/snudbx/**
 
 ## `NOTES.md`에 답할 질문
 
-각 질문에 대해 세 문장 내외로 답하라.
+각 질문에 대해 세 문장 내외로 답하라. 코스 레포의 `pa2/NOTES.md`에 질문이 들어 있는 양식이 있으니, 그 파일에 답을 채워 제출한다.
 
 1. `buffer_pools`를 실행 중에 바꿀 수 있게 만들었다면 어떤 문제가 생길지 설명하라.
 2. `snudbx_buffer/` 안의 파일에는 `#ifdef SNUDBX`가 필요 없는데 `guc_tables.c`에는
