@@ -340,11 +340,3 @@ smgrstartreadv(ioh, operation->smgr, forknum, blocknum,
 
     * `io_method = sync`인데도 `AsyncReadBuffers()`라는 이름의 함수가 I/O를 수행한다. 이름을 고치지 않고 둔 이유는 무엇일까?
     * 읽기 스트림이 블록 0~15를 요청했는데 5번이 이미 유효했다. 잘라서 0~4만 읽고, 5번은 핀을 잡은 채 넘긴다. 여기서 핀을 풀어버리지 않는 이유가 뭘까?
-
-## 앞으로 볼 것
-
-| | 다룰 내용 |
-| --- | --- |
-| [§08](08-buffer-alloc.md) | `BufferAlloc()`과 `GetVictimBuffer()` — 프레임을 찾고 비워 오는 층 |
-| §11(준비 중) | 핀, 내용 락, 헤더 스핀락 |
-| [§20](20-read-stream.md) | 읽기 스트림 — `StartReadBuffers()`의 진짜 사용자 |
