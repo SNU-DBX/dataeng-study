@@ -21,6 +21,12 @@ icon: lucide/database
     ---
 
     PostgreSQL이 테이블을 디스크에 저장하고 읽는 방식.
+
+-   **[PA2 — PostgreSQL Buffer Manager](pa2-study/index.md)**
+
+    ---
+
+    PostgreSQL이 버퍼 풀을 만들고, 페이지를 읽어 들이고, 교체하는 방식.
 </div>
 
 
