@@ -74,7 +74,8 @@ echo $PGBASE
 ```bash
 # (1) default 빌드
 mkdir -p $PGBASE/build-default && cd $PGBASE/build-default
-$PGBASE/postgres-18/configure --prefix=$PGBASE/pgsql-default --enable-cassert --enable-debug
+$PGBASE/postgres-18/configure --prefix=$PGBASE/pgsql-default --enable-cassert --enable-debug \
+               --enable-depend
 make -j$(nproc) && make install
 ```
 
@@ -82,7 +83,7 @@ make -j$(nproc) && make install
 # (2) snudbx 빌드
 mkdir -p $PGBASE/build-snudbx && cd $PGBASE/build-snudbx
 $PGBASE/postgres-18/configure --prefix=$PGBASE/pgsql --enable-cassert --enable-debug \
-               --enable-snudbx-buffer
+               --enable-depend --enable-snudbx-buffer
 make -j$(nproc) && make install
 ```
 
@@ -91,6 +92,12 @@ make -j$(nproc) && make install
 ```bash
 which pg_ctl      # $PGBASE/pgsql/bin/pg_ctl 이어야 한다
 ```
+
+### `--enable-depend`도 꼭 켠다
+
+PostgreSQL의 Makefile은 이 옵션을 줘야만 헤더 파일의 변경을 추적한다. 이 옵션이 없으면 `buf_internals.h` 같은 헤더를 고쳐도 그 헤더를 쓰는 `.c` 파일들이 다시 컴파일되지 않는다. 그러면 구조체 정의가 서로 다른 오브젝트가 섞인 채로 링크되어, 원인을 찾기 아주 어려운 오류가 난다. PA2는 헤더를 자주 고치는 과제이므로 처음부터 켜 둔다.
+
+이미 이 옵션 없이 빌드했다면, 위의 configure를 옵션을 넣어 다시 실행한 뒤 `make clean`을 한 번 하고 다시 빌드한다.
 
 ### `--enable-cassert`는 필수
 
@@ -161,7 +168,7 @@ pg_ctl -D $PGBASE/pgdata stop
 
 ## 5. 고친 뒤 다시 빌드하기
 
-소스만 고쳤다면 `make`와 `make install`만 다시 하면 된다. configure부터 다시 할 필요는 없다.
+소스만 고쳤다면 `make`와 `make install`만 다시 하면 된다. configure부터 다시 할 필요는 없다. `--enable-depend`로 configure했다면 헤더를 고친 경우에도 마찬가지다.
 
 ```bash
 make -C $PGBASE/build-snudbx -j$(nproc) install
@@ -169,6 +176,8 @@ make -C $PGBASE/build-default -j$(nproc) install
 ```
 
 서버가 떠 있었다면 `pg_ctl restart`로 다시 띄워야 새롭게 빌드된 서버가 실행된다.
+
+빌드가 이상하게 꼬였다고 느껴지면 `make -C $PGBASE/build-snudbx clean` 후 다시 빌드하면 항상 처음부터 깨끗하게 컴파일된다.
 
 ---
 
