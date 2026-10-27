@@ -137,11 +137,20 @@ SHOW debug_assertions;   -- on 이어야 한다
 
 ---
 
-## 4. DB 만들기와 서버 띄우기
+## 4. DB 만들기와 서버 띄우기 { #db-and-server }
 
 `initdb`는 **default 빌드**로 실행한다. 우리가 바꾼 코드가 클러스터 생성에 영향을 주지 않게 하기 위해서다. 서버를 띄워 사용할 때는 **snudbx 빌드**를 쓴다. 데이터가 디스크에 저장되는 형식은 바뀌지 않으므로, 서로 다른 빌드로 만든 데이터 디렉터리도 그대로 읽을 수 있다. 그래서 아래 코드 예시에서 보면 `pgdata`라는 폴더에 있는 데이터베이스를 두 개의 서로 다른 빌드가 이용하고 있다.
 
 새 데이터베이스를 만드는 `CREATE DATABASE`(`createdb`)도 default 빌드 서버에서만 한다. 만약 데이터베이스를 삭제하고 싶을 때에도(`DROP DATABASE`) 마찬가지다.
+
+`postgresql.conf`에 덧붙이는 네 줄은 과제의 가정([Phase 1](phase1.md#assumptions))에 맞춰 서버를 띄우기 위한 것이다. 채점 서버도 같은 설정으로 띄운다.
+
+| 설정 | 의미 |
+|---|---|
+| `io_method = sync` | 디스크 I/O를 동기적으로 한다. |
+| `max_parallel_workers = 0` | 쿼리 하나를 여러 프로세스가 나눠 실행하지 않는다. |
+| `max_parallel_maintenance_workers = 0` | 인덱스 생성 등도 여러 프로세스로 나누지 않는다. |
+| `autovacuum = off` | 백그라운드에서 테이블을 정리하는 프로세스를 띄우지 않는다. |
 
 default 빌드는 `PATH`에 없으므로 `$PGBASE/pgsql-default/bin/`을 붙여 실행하고, snudbx 빌드는 이름만으로 실행한다.
 
@@ -149,7 +158,12 @@ default 빌드는 `PATH`에 없으므로 `$PGBASE/pgsql-default/bin/`을 붙여 
 # 데이터 디렉터리 생성 — default 빌드로
 $PGBASE/pgsql-default/bin/initdb -D $PGBASE/pgdata --auth-local=trust
 mkdir -p $PGBASE/pgdata/log
-echo "io_method = sync" >> $PGBASE/pgdata/postgresql.conf
+cat >> $PGBASE/pgdata/postgresql.conf <<'EOF'
+io_method = sync
+max_parallel_workers = 0
+max_parallel_maintenance_workers = 0
+autovacuum = off
+EOF
 
 # (필요하면) 새 데이터베이스 생성 — default 빌드 서버로
 $PGBASE/pgsql-default/bin/pg_ctl -D $PGBASE/pgdata -l $PGBASE/pgdata/log/postgresql.log start
