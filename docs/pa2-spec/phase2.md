@@ -985,3 +985,68 @@ wrote 10000 rows to latency_snudbx.csv
 2. snudbx 빌드에는 어떤 문제가 있는가? 그 원인을 Step 2-3의 설계와 연결해 간략히 설명하고, 근거가 된 관찰(그래프, 수치)을 함께 제시하라.
 3. 이 문제를 해결하거나 줄일 수 있는 방법을 제안하라. 그 방법이 새로 만드는 비용이나 다른 문제가 있다면 함께 쓴다.
 
+
+---
+
+## 제출
+
+PA2는 Phase 2까지 끝낸 뒤 **한 번만** 제출한다. Phase 1은 따로 채점하지 않았고(ungraded), 이 제출에서 Phase 1의 항목도 함께 채점한다. Phase 1부터 Phase 2까지의 모든 변경을 담은 패치 하나와, Phase 1·2 질문에 모두 답한 `NOTES.md`, Step 2-4의 그래프 이미지를 Gradescope에 한 번에 올린다.
+
+| 파일 | 내용 |
+|---|---|
+| `pa2.patch` | 소스 트리의 모든 변경(Phase 1 포함). 이름은 반드시 `pa2.patch` |
+| `NOTES.md` | 코스 레포 `pa2/NOTES.md` 양식. Phase 1 질문과 Phase 2 질문에 모두 답한다 |
+| 그래프 이미지 | Step 2-4의 그래프. PNG 등, 3개 이내 |
+
+### 패치 만들기
+
+Phase 1과 같은 명령이다. 패치는 소스 트리 안에서 만들되, 파일은 소스 트리 밖(`$PGBASE`)에 저장한다.
+
+```bash
+cd $PGBASE/postgres-18
+git add -A .
+git diff --relative pa2-base > $PGBASE/pa2.patch
+```
+
+- 기준이 `pa2-base`이므로 패치에는 Phase 1의 변경과 미리 제공된 코드가 모두 들어간다. Phase 2의 변경만 따로 내지 않는다.
+- `git add -A .`의 `.`은 소스 트리 안의 변경만 대상으로 한다는 뜻이다. 새로 만든 파일도 이렇게 해야 패치에 들어간다.
+- Step 2-1의 프리페치 코드처럼 문서에서 복사해 넣은 코드도 패치에 들어가야 한다.
+
+패치가 건드릴 수 있는 경로는 Phase 1과 같다. 그 밖의 파일이 포함되면 채점 없이 반려된다.
+
+```
+src/include/**
+src/backend/utils/init/globals.c
+src/backend/utils/misc/guc_tables.c
+src/backend/storage/lmgr/lwlock.c
+src/backend/storage/snudbx_buffer/**
+contrib/snudbx/**
+```
+
+### 내기 전에 확인하기
+
+1. **로컬 채점기를 돌린다.** 코스 레포를 갱신했다면 Phase 2의 기초 항목(4.6, 5.1, 6.1)이 추가되어 있다. 모두 통과해야 한다.
+
+    ```bash
+    cd ~/2026-2-data-engineering/pa2/local-grader
+    ./run_local.sh $PGBASE/postgres-18
+    ```
+
+2. **만든 패치가 `pa2-base` 트리에 깨끗이 적용되는지 본다.** Gradescope는 `pa2-base` 상태의 소스 트리에 이 패치를 적용해 채점한다. 위 명령으로 만든 패치라면 대개 문제가 없지만, 손으로 고친 패치는 여기서 걸린다. 지금 작업 중인 트리는 건드리지 않고, `pa2-base` 트리를 임시 디렉터리에 따로 꺼내 확인한다.
+
+    ```bash
+    rm -rf /tmp/pa2check && mkdir -p /tmp/pa2check
+    git -C ~/2026-2-data-engineering archive pa2-base pa2/PostgreSQL/postgres-18 | tar -x -C /tmp/pa2check
+    cd /tmp/pa2check/pa2/PostgreSQL/postgres-18
+    git apply --check $PGBASE/pa2.patch && echo "patch OK"
+    ```
+
+    `patch OK`가 나오지 않으면 오류에 나온 파일부터 확인하고 패치를 다시 만든다. 확인이 끝나면 `/tmp/pa2check`는 지워도 된다.
+
+3. **각 step의 "테스트" 절 예시를 직접 해 본다.** 로컬 채점기에는 기초 항목만 들어 있고, Gradescope는 훨씬 많은 항목으로 채점한다.
+
+### Gradescope에서 보이는 것
+
+- 점수는 step별로 한 줄씩(Step 1-1 … Step 2-3, Step 2-1 extra) 보인다. 항목별 결과와 실패 이유는 보이지 않는다.
+- 패치가 반려되었거나(허용 경로 밖, 적용 실패) 빌드가 실패하면 그 이유가 보인다.
+- `NOTES.md`와 이미지는 자동 채점하지 않고 따로 채점한다.
