@@ -72,6 +72,7 @@ nav = [
   { "PA2 Spec" = [
     "pa2-spec/setup.md",
     "pa2-spec/phase1.md",
+    "pa2-spec/phase2.md",
   ] },
   { "PA2 Study" = [
     "pa2-study/index.md",
